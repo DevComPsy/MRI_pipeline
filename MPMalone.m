@@ -6,7 +6,7 @@
 % Base directory to search for folders
 
 
-mainDir = 'F:\OCD_data';
+mainDir = 'D:\RewardLearningDopamine\Pilot\912\Neuroflux912_b19860101\20250430_140429_MR_Prisma_3d4a7716-1967-49';
 
 % Get a list of all entries in the main directory
 allEntries = dir(mainDir);
@@ -17,17 +17,17 @@ participantFolders = allEntries([allEntries.isdir] & ~ismember({allEntries.name}
 
 % Iterate over each participant folder
 for i = 1:length(participantFolders)
-    participantName = participantFolders(i).name; % Name of the participant folder
-    participantPath = fullfile(mainDir, participantName); % Full path to the participant folder
+    % participantName = participantFolders(i).name; % Name of the participant folder
+    % participantPath = fullfile(mainDir, participantName); % Full path to the participant folder
+    % 
+    % % Display participant path (or process the folder as needed)
+    % disp(['Processing folder: ', participantPath]);
+    % 
+    % % Add your processing code here
+    % 
+participantPath = mainDir;
 
-    % Display participant path (or process the folder as needed)
-    disp(['Processing folder: ', participantPath]);
-
-    % Add your processing code here
-
-
-
-    cd(participantPath)
+    cd(mainDir)
     % List of folder names to search for
     % List of folder name patterns to search for
     folderPatterns = {'*array*', '*body*', '*afib1*', '*t1w*', '*pdw*', '*mtw*'};

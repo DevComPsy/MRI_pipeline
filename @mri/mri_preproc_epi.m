@@ -98,7 +98,7 @@ spm_jobman('run',matlabbatch(2));
 
 % We need to grab the T1 (whith distortion correction)
 
-t1w = dir([mri.ana_dir , '*run-02_T1w.nii.gz']);
+t1w = dir([mri.ana_dir , '*T1w.nii.gz']);
 gunzip([mri.ana_dir t1w.name],[mri.res_dir  'sub-' num2str(mri.ID) '\anat\'])
 
 tmp = dir([mri.res_dir  'sub-' num2str(mri.ID) '\anat\sub*']);
@@ -106,6 +106,7 @@ tmp = tmp(arrayfun(@(f) endsWith(f.name, '.nii'), tmp));
 
 anat_file = [mri.res_dir  'sub-' num2str(mri.ID) '\anat\' tmp.name];
 
+mri.ana_dir = [mri.res_dir  'sub-' num2str(mri.ID) '\anat\'];
 mean_epi =[]; tmp = dir([mri.res_dir  'sub-' num2str(mri.ID) '\func\mean*']); 
 
 if length(tmp) > 1; error('shuld have one file') ;end
@@ -208,7 +209,7 @@ spm_jobman('run',matlabbatch(6));
 mri.epis= {};
 tmp = dir([mri.res_dir  'sub-' num2str(mri.ID) '\func\swu*']);
 for i = 1:length(tmp)
-    mri.epis{i} = [m ri.fun_dir tmp.name];
+    mri.epis{i} = [mri.fun_dir tmp.name];
 end
 
 

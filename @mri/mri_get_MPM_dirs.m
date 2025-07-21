@@ -5,70 +5,108 @@
 %
 % MPMs
 % 1) Localizer
-% 2) mfc_bloch_siegert
-% 3) mfc_bloch_siegert
-% 4) mfc_bloch_siegert
-% 5) mfc_smaps_v1a_Array
-% 6) mfc_smaps_v1a_Body
-% 7) t1w_mfc_3dflash_v1k_R4
-% 8) mfc_smaps_v1a_Array 
-% 9) mfc_smaps_v1a_Body
-% 10) pdw_mfc_3dflash_v1k_R4
-% 11) mfc_smaps_v1a_Array 
-% 12) mfc_smaps_v1a_Body
-% 13) mtw_mfc_3dflash_v1k_R4_FAExc_12_200us
-%
+% 2) mfc_smaps_v1a_Array
+% 3) mfc_smaps_v1a_Body
+% 4) t1w_mfc_3dflash_v1k_R4
+% 5) pdw_mfc_3dflash_v1k_R4
+% 6) mtw_mfc_3dflash_v1k_R4_FAExc_12_200us
+
 function mri = mri_get_MPM_dirs(mri)
 
 %% get different sequences that were run
-tmp_list = dir([mri.mri_dir 'nii\*FIL*']);
-n_seqs = length(tmp_list);
-scan_name = tmp_list(1).name(1:7);
-clear tmp_list
+% List of folder names to search for
+% List of folder name patterns to search for
+folderPatterns = {'*array*', '*body*', '*kp*', '*t1w*', '*pdw*', '*mtw*'};
+folderNames = {'smaps_array','smaps_body','kp_b0','t1w','pdw','mtw'};
+% Initialize a structure to hold file paths
+filePaths = struct();
 
-%% find the folder with 6 scane (MT!)
-n_scans = [];
-for f = 1:n_seqs
-    n_scans(f) =  numel(dir([mri.mri_dir 'nii\' scan_name '_FIL.S' int2str(f) '\*.nii']));
+% Loop through each folder pattern
+for i = 1:length(folderPatterns)
+    clear unzippedNames
+    folderPattern = folderPatterns{i}; % Current folder pattern to look for
+
+    % Find all matching folders
+    matchingfiles = dir(fullfile(mri.ana_dir, folderPattern ));
+    scanfiles = matchingfiles(contains({matchingfiles.name}, 'nii.gz'));
+
+    for unzip = 1:length(scanfiles)
+    gzFilePath = fullfile(scanfiles(unzip).folder, scanfiles(unzip).name);
+    
+    % Remove .gz to get target .nii filename
+    niiName = erase(scanfiles(unzip).name, '.gz');
+    niiPath = fullfile(scanfiles(unzip).folder, niiName);
+
+    % Only unzip if the .nii file doesn't already exist
+    if ~exist(niiPath, 'file')
+        gunzip(gzFilePath);
+    end
+
+    % Store the (existing or newly unzipped) path
+    unzippedNames(unzip) = string(niiPath);
+    end
+
+
+
+    % Get all .nii files in the folder
+    % Extract full file paths into a string vector
+    % folderNames = matlab.lang.makeValidName(scanname); % Ensure valid field name
+    filePaths.(folderNames{i}) = unzippedNames;
+
+end
+
+% Get all field names
+fields = fieldnames(filePaths);
+if length(fields) ~=6
+    error('Too much folder')
 end
 
 
-%% get scan types based on scan number and order
-MT_idx = find(n_scans==6,1,'first');
-T1_idx = find(n_scans==8,1,'first');
-PD_idx = find(n_scans==8,2,'first'); PD_idx(1) = [];
 
 %% rename and save dirs
 dirs = [];
 
 % MT
-dirs.MT{1} = renameDir([mri.mri_dir 'nii\' scan_name '_FIL.S' int2str(MT_idx-2) '\'],[mri.mri_dir 'MPM_raw\MT_smap_array\']);
-dirs.MT{2} = renameDir([mri.mri_dir 'nii\' scan_name '_FIL.S' int2str(MT_idx-1) '\'],[mri.mri_dir 'MPM_raw\MT_smap_body\']);
-dirs.MT{3} = renameDir([mri.mri_dir 'nii\' scan_name '_FIL.S' int2str(MT_idx) '\'],[mri.mri_dir 'MPM_raw\MT\']);
+dirs.MT{1} = filePaths.mtw;
+if length(dirs.MT{1}) ~= 6
+    error('Incorrect number of MTw files')
+end
 
 % PD
-dirs.PD{1} = renameDir([mri.mri_dir 'nii\' scan_name '_FIL.S' int2str(PD_idx-2) '\'],[mri.mri_dir 'MPM_raw\PD_smap_array\']);
-dirs.PD{2} = renameDir([mri.mri_dir 'nii\' scan_name '_FIL.S' int2str(PD_idx-1) '\'],[mri.mri_dir 'MPM_raw\PD_smap_body\']);
-dirs.PD{3} = renameDir([mri.mri_dir 'nii\' scan_name '_FIL.S' int2str(PD_idx) '\'],[mri.mri_dir 'MPM_raw\PD\']);
-
+dirs.PD{1} = filePaths.pdw;
+if length(dirs.PD{1}) ~= 8
+    error('Incorrect number of PDw files')
+end
 % T1
-dirs.T1{1} = renameDir([mri.mri_dir 'nii\' scan_name '_FIL.S' int2str(T1_idx-2) '\'],[mri.mri_dir 'MPM_raw\T1_smap_array\']);
-dirs.T1{2} = renameDir([mri.mri_dir 'nii\' scan_name '_FIL.S' int2str(T1_idx-1) '\'],[mri.mri_dir 'MPM_raw\T1_smap_body\']);
-dirs.T1{3} = renameDir([mri.mri_dir 'nii\' scan_name '_FIL.S' int2str(T1_idx) '\'],[mri.mri_dir 'MPM_raw\T1\']);
+dirs.T1{1} = filePaths.t1w;
+if length(dirs.T1{1}) ~= 8
+    error('Incorrect number of T1w files')
+end
 
-% preprocessed B1
-mkdir([mri.mri_dir 'MPM_raw\B1_prepro\'])
-dirs.B1{1} = [mri.mri_dir 'MPM_raw\B1_prepro\'];
-tmp = dir([mri.mri_dir 'nii\' scan_name '_FIL.S' int2str(find(n_scans==2,1,'first')) '\*-01*.nii*']);
-copyfile([mri.mri_dir 'nii\' scan_name '_FIL.S' int2str(find(n_scans==2,1,'first')) '\' tmp(1).name],dirs.B1{1});
-copyfile([mri.mri_dir 'nii\' scan_name '_FIL.S' int2str(find(n_scans==1,1,'first')) '\*-01*.nii*'],dirs.B1{1});
+% smaps
+dirs.smaps{1} = filePaths.smaps_array;
+if length(dirs.smaps{1}) ~= 1
+    error('Incorrect number of smaps_array files')
+end
+dirs.smaps{2} = filePaths.smaps_body;
+if length(dirs.smaps{2}) ~= 1
+    error('Incorrect number of smaps_body files')
+end
+
+%b0 (change files order for next script)
+dirs.b0{1} = filePaths.kp_b0{2};
+if length(dirs.b0) ~= 1
+    error('Incorrect number of b0 files')
+end
+
+dirs.b0{2} = filePaths.kp_b0{1};
+if length(dirs.b0) ~= 2
+    error('Incorrect number of b0 files')
+end
+
 
 
 mri.mpm.dirs = dirs;
 
-function new = renameDir(old,new)
-    mkdir(new);
-    movefile([old '*'],new);
-    rmdir(old);
-end
+
 end
