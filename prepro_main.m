@@ -13,7 +13,7 @@ list = (dir('sub-*'));
 param.exclude = 15;
 list(param.exclude) = [];
 
-for i = 13:length(list)
+for i = 15:length(list)
     ID = list(i).name(5:end); %remove sub- from subject ID
 
     mr = run_MRI(ID);

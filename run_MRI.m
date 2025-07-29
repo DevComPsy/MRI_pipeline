@@ -1,4 +1,4 @@
-function mr = run_MRI(ID)
+ function mr = run_MRI(ID)
 % Check if SPM is already open
 % spmFigure = findall(0, 'Tag', 'SPMfigure');
 % 
@@ -34,7 +34,7 @@ if param.indLev ==1
     mr = EL_1stL_01(mr);
     mr.save;
 end
-if param.avgbrain ==1
-    mr = mri_create_average_brain(mr);
-end
+% if param.avgbrain ==1
+%     mr = mri_create_average_brain(mr);
+% end
 
