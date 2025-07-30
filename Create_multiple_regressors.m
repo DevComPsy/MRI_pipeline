@@ -109,8 +109,8 @@ for sub = 32
 
         matlabbatch{1}.spm.tools.physio.save_dir = {physio_dir_sub(block).folder };
         matlabbatch{1}.spm.tools.physio.log_files.vendor = 'Custom';
-        matlabbatch{1}.spm.tools.physio.log_files.cardiac = {respiration_dir};
-        matlabbatch{1}.spm.tools.physio.log_files.respiration = {pulse_dir};
+        matlabbatch{1}.spm.tools.physio.log_files.cardiac = {pulse_dir};
+        matlabbatch{1}.spm.tools.physio.log_files.respiration = {respiration_dir};
         matlabbatch{1}.spm.tools.physio.log_files.scan_timing = {''};
         matlabbatch{1}.spm.tools.physio.log_files.sampling_interval = 0.01;
         matlabbatch{1}.spm.tools.physio.log_files.relative_start_acquisition = 0;
