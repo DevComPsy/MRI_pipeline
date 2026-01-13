@@ -17,8 +17,11 @@ dirs = mri.mpm.dirs;
 
 
 clear matlabbatch
-mkdir([mri.ana_dir 'MPM\'])
-mpm_output = [mri.ana_dir 'MPM\'];
+%mkdir([mri.ana_dir 'MPM\'])
+%mpm_output = [mri.ana_dir 'MPM\'];
+mpm_output = [mri.res_dir 'sub-' num2str(mri.ID) '\anat\MPM\'];
+mkdir(mpm_output);
+
     clear matlabbatch
     %Do the job
     matlabbatch{1}.spm.tools.hmri.hmri_config.hmri_setdef.customised = {'C:\Users\Kenza Kedri\Documents\GitHub\MRI\hMR_toolbox_VTASN\hmri_CBS_3TP_defaults.m'};
@@ -40,7 +43,8 @@ mpm_output = [mri.ana_dir 'MPM\'];
 % spm_jobman('initcfg')
 % 
 % % get out files
-mri.mpm.res_dir = [mri.ana_dir 'MPM\Results\'];
+%mri.mpm.res_dir = [mri.ana_dir 'MPM\Results\'];
+mri.mpm.res_dir = [mpm_output 'Results\'];
 tmp_list = dir([mri.mpm.res_dir '*.nii']);
 mri.mpm.files.res_files = {tmp_list(:).name};
 tmp_list = dir([mri.mpm.res_dir '*MTsat.nii']);

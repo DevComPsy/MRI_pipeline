@@ -107,7 +107,7 @@ for sub = 32
 
         clearvars matlabbatch
 
-        matlabbatch{1}.spm.tools.physio.save_dir = {physio_dir_sub(block).folder };
+        matlabbatch{1}.spm.tools.physio.save_dir = {physio_dir(block).folder };
         matlabbatch{1}.spm.tools.physio.log_files.vendor = 'Custom';
         matlabbatch{1}.spm.tools.physio.log_files.cardiac = {pulse_dir};
         matlabbatch{1}.spm.tools.physio.log_files.respiration = {respiration_dir};
