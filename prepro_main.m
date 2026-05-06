@@ -6,23 +6,24 @@ param = ans;
 
 %add path
 addpath 'C:\Users\Kenza Kedri\Documents\GitHub\MRI_pipeline'
-% mri_path = 'D:\pilot/'
 cd(param.mri_path)
 
 list = (dir('sub-*'));
-% param.exclude = 15;
-% list(param.exclude) = [];
 
-for i =1: length(list)
-    ID = list(i).name(5:end); %remove sub- from subject ID
 
-      mr = run_MRI(ID);
+%Subjectl level
+for i = 1:length(list)
+    ID = list(i).name(5:end);
+    if ismember(str2double(ID), param.exclude)
+        fprintf('Sub-%s: excluded, skipping.\n', ID);
+        continue
+    end
+    mr = run_MRI(ID);
 end
 
 
-if param.avgbrain ==1
-
-    create_average_brain()
-
-
+% group level
+if param.avgbrain  == 1; create_average_brain(list, param); end
+if any(structfun(@(x) x, param.dartel))
+    run_dartel(list, param);
 end

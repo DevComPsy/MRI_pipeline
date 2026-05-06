@@ -22,7 +22,6 @@ if param.MPM ==1
     mr = mri_get_MPM_dirs(mr);
     mr.save;
     mr = mri_run_MPM(mr);
-
 end
 if param.physio ==1
     mr = mri_get_physio_regressors(mr);
@@ -34,7 +33,9 @@ if param.indLev ==1
     mr = EL_1stL_01(mr);
     mr.save;
 end
-% if param.avgbrain ==1
-%     mr = mri_create_average_brain(mr);
-% end
+if param.FD ==1
+    mr = mri_check_FD(ID);
+    mr.save;
+end
+
 
