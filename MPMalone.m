@@ -6,7 +6,7 @@
 % Base directory to search for folders
 
 
-mainDir = 'D:\RewardLearningDopamine\Pilot\912\Neuroflux912_b19860101\20250430_140429_MR_Prisma_3d4a7716-1967-49';
+mainDir = 'D:\MPM_pilot\sub-901\ses-1\anat';
 
 % Get a list of all entries in the main directory
 allEntries = dir(mainDir);
@@ -23,7 +23,6 @@ for i = 1:length(participantFolders)
     % % Display participant path (or process the folder as needed)
     % disp(['Processing folder: ', participantPath]);
     % 
-    % % Add your processing code here
     % 
 participantPath = mainDir;
 

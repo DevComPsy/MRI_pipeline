@@ -1,7 +1,7 @@
 clear all ; close all
 global param
 
-run('D:\RewardLearningDopamine\code\load_param.m');
+run('D:\MPM_pilot\load_param.m');
 param = ans;
 
 %add path
@@ -10,15 +10,15 @@ addpath 'C:\Users\Kenza Kedri\Documents\GitHub\MRI_pipeline'
 cd(param.mri_path)
 
 list = (dir('sub-*'));
-param.exclude = 15;
-list(param.exclude) = [];
+% param.exclude = 15;
+% list(param.exclude) = [];
 
-for i = 15:length(list)
+for i =1: length(list)
     ID = list(i).name(5:end); %remove sub- from subject ID
 
-    mr = run_MRI(ID);
-  end
- 
+      mr = run_MRI(ID);
+end
+
 
 if param.avgbrain ==1
 

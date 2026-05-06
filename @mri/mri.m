@@ -9,6 +9,7 @@ classdef mri
         mri_dir
         fun_dir
         ana_dir
+        mpm_dir
         epi_dirs
         epi_dirs_org
         beh_dir

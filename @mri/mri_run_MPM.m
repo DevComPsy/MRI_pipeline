@@ -19,33 +19,38 @@ dirs = mri.mpm.dirs;
 clear matlabbatch
 mkdir([mri.ana_dir 'MPM\'])
 mpm_output = [mri.ana_dir 'MPM\'];
-    clear matlabbatch
-    %Do the job
-    matlabbatch{1}.spm.tools.hmri.hmri_config.hmri_setdef.customised = {'C:\Users\Kenza Kedri\Documents\GitHub\MRI\hMR_toolbox_VTASN\hmri_CBS_3TP_defaults.m'};
-    matlabbatch{2}.spm.tools.hmri.create_mpm.subj.output.outdir = cellstr([mpm_output,'\']);
-    matlabbatch{2}.spm.tools.hmri.create_mpm.subj.sensitivity.RF_once = cellstr(dirs.smaps)';
-    matlabbatch{2}.spm.tools.hmri.create_mpm.subj.b1_type.i3D_AFI.b1input = cellstr(dirs.b0)';
-    matlabbatch{2}.spm.tools.hmri.create_mpm.subj.b1_type.i3D_AFI.b1parameters.b1defaults = {'C:\Users\Kenza Kedri\Documents\GitHub\MRI\hMR_toolbox_VTASN\hmri_b1_CBS_3T_AFI3_60_defaults.m'};
-    matlabbatch{2}.spm.tools.hmri.create_mpm.subj.raw_mpm.MT = cellstr(dirs.MT{1})';
-    matlabbatch{2}.spm.tools.hmri.create_mpm.subj.raw_mpm.PD = cellstr(dirs.PD{1})';
-    matlabbatch{2}.spm.tools.hmri.create_mpm.subj.raw_mpm.T1 = cellstr(dirs.T1{1})';
-    matlabbatch{2}.spm.tools.hmri.create_mpm.subj.popup = false;
+clear matlabbatch
+%Do the job
+matlabbatch{1}.spm.tools.hmri.hmri_config.hmri_setdef.customised = {'C:\Users\Kenza Kedri\Documents\GitHub\MRI\hMR_toolbox_VTASN\hmri_CBS_3TP_defaults.m'};
+matlabbatch{2}.spm.tools.hmri.create_mpm.subj.output.outdir = cellstr([mpm_output,'\']);
+%% WARNING: The smaps order depends on the scan order (bids format) make sure that all contrasts are correct in your case.
+% in this example, I scanned first the smaps for the T1, then the PD then
+% the MTw
+matlabbatch{2}.spm.tools.hmri.create_mpm.subj.sensitivity.RF_per_contrast.raw_sens_MT =cellstr([dirs.smaps{1,1,1}(3), dirs.smaps{1,2,1}(3)])';
+matlabbatch{2}.spm.tools.hmri.create_mpm.subj.sensitivity.RF_per_contrast.raw_sens_PD = cellstr([dirs.smaps{1,1,1}(2), dirs.smaps{1,2,1}(2)])';
+matlabbatch{2}.spm.tools.hmri.create_mpm.subj.sensitivity.RF_per_contrast.raw_sens_T1 = cellstr([dirs.smaps{1,1,1}(1), dirs.smaps{1,2,1}(1)])';
+matlabbatch{2}.spm.tools.hmri.create_mpm.subj.b1_type.i3D_AFI.b1input = cellstr(dirs.b0)';
+matlabbatch{2}.spm.tools.hmri.create_mpm.subj.b1_type.i3D_AFI.b1parameters.b1defaults = {'C:\Users\Kenza Kedri\Documents\GitHub\MRI\hMR_toolbox_VTASN\hmri_b1_CBS_3T_AFI3_60_defaults.m'};
+matlabbatch{2}.spm.tools.hmri.create_mpm.subj.raw_mpm.MT = cellstr(dirs.MT{1})';
+matlabbatch{2}.spm.tools.hmri.create_mpm.subj.raw_mpm.PD = cellstr(dirs.PD{1})';
+matlabbatch{2}.spm.tools.hmri.create_mpm.subj.raw_mpm.T1 = cellstr(dirs.T1{1})';
+matlabbatch{2}.spm.tools.hmri.create_mpm.subj.popup = false;
 
-  for m = 1:length(matlabbatch)
+for m = 1:length(matlabbatch)
     spm_jobman('run',matlabbatch(m));
-   end
+end
 
 % %% spm batch script for segmentation and normalization
 % spm('defaults', 'fmri')
 % spm_jobman('initcfg')
-% 
+%
 % % get out files
 mri.mpm.res_dir = [mri.ana_dir 'MPM\Results\'];
 tmp_list = dir([mri.mpm.res_dir '*.nii']);
 mri.mpm.files.res_files = {tmp_list(:).name};
 tmp_list = dir([mri.mpm.res_dir '*MTsat.nii']);
 
-% 
+%
 % clear matlabbatch
 % % segment
 % matlabbatch{1}.spm.spatial.preproc.channel.vols = {[mri.mpm.res_dir tmp_list(1).name ',1']};
@@ -83,7 +88,7 @@ tmp_list = dir([mri.mpm.res_dir '*MTsat.nii']);
 % matlabbatch{1}.spm.spatial.preproc.warp.fwhm = 0;
 % matlabbatch{1}.spm.spatial.preproc.warp.samp = 3;
 % matlabbatch{1}.spm.spatial.preproc.warp.write = [1 1];
-% 
+%
 % % normalize MT using deformation
 % matlabbatch{2}.spm.spatial.normalise.write.subj.def = {[mri.mpm.res_dir 'y_' tmp_list(1).name]};
 % matlabbatch{2}.spm.spatial.normalise.write.subj.resample = {[mri.mpm.res_dir tmp_list(1).name ',1']};
@@ -91,7 +96,7 @@ tmp_list = dir([mri.mpm.res_dir '*MTsat.nii']);
 %                                                           78 76 85];
 % matlabbatch{2}.spm.spatial.normalise.write.woptions.vox = [2 2 2];
 % matlabbatch{2}.spm.spatial.normalise.write.woptions.interp = 4;
-% 
+%
 % for i = 1:length(matlabbatch)
 %     spm_jobman('run',matlabbatch(i));
 % end

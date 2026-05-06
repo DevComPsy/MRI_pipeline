@@ -27,7 +27,7 @@ for i = 1:length(folderPatterns)
     folderPattern = folderPatterns{i}; % Current folder pattern to look for
 
     % Find all matching folders
-    matchingfiles = dir(fullfile(mri.ana_dir, folderPattern ));
+    matchingfiles = dir(fullfile(mri.mpm_dir, folderPattern ));
     scanfiles = matchingfiles(contains({matchingfiles.name}, 'nii.gz'));
 
     for unzip = 1:length(scanfiles)
@@ -85,11 +85,11 @@ end
 
 % smaps
 dirs.smaps{1} = filePaths.smaps_array;
-if length(dirs.smaps{1}) ~= 1
+if length(dirs.smaps{1}) ~= 3
     error('Incorrect number of smaps_array files')
 end
 dirs.smaps{2} = filePaths.smaps_body;
-if length(dirs.smaps{2}) ~= 1
+if length(dirs.smaps{2}) ~= 3
     error('Incorrect number of smaps_body files')
 end
 

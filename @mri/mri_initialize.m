@@ -2,11 +2,12 @@ function mri = mri_initialize(mri)
 global param
 mri.nblocks = 4;
 mri.ndummies = 6;
-mri.fun_dir = [param.mri_path 'sub-' num2str(mri.ID) '\func\'];
-mri.ana_dir = [param.mri_path 'sub-' num2str(mri.ID) '\anat\'];
-mri.beh_dir = [param.mri_path 'sub-' num2str(mri.ID) '\beh\'];
-mri.physio_dir = [param.mri_path 'sub-' num2str(mri.ID) '\physio\'];
-mri.fmap_dir = [param.mri_path 'sub-' num2str(mri.ID) '\fmap\'];
+mri.fun_dir = [param.mri_path 'sub-' num2str(mri.ID) '\ses-2\func\'];
+mri.mpm_dir = [param.mri_path 'sub-' num2str(mri.ID) '\ses-1\anat\'];
+mri.ana_dir = [param.mri_path 'sub-' num2str(mri.ID) '\ses-2\anat\'];
+mri.beh_dir = [param.mri_path 'sub-' num2str(mri.ID) '\ses-2\beh\'];
+mri.physio_dir = [param.mri_path 'sub-' num2str(mri.ID) '\ses-2\physio\'];
+mri.fmap_dir = [param.mri_path 'sub-' num2str(mri.ID) '\ses-2\fmap\'];
 mri.res_dir = 'D:\RewardLearningDopamine\derivatives\';
 mri.data_dir = [mri.res_dir 'sub-' num2str(mri.ID) '\'];  % where mri object is stored
 mri.epi_params.TR = 1.5;    % seconds
